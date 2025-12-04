@@ -1,0 +1,59 @@
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Dependency directories
+node_modules/
+
+# Vite / SvelteKit build output
+build/
+dist/
+.svelte-kit/
+.vercel/
+.netlify/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Prisma
+# Do NOT ignore migrations (should be committed)
+# Ignore generated Prisma Client if using custom output
+prisma/generated/
+node_modules/.prisma/
+
+# Editor directories and files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Typescript build files
+*.tsbuildinfo
+
+# Legacy Sapper
+__sapper__/
+
+# Bun
+bun.lockb
+
+# Optional caches
+npm-cache/
+.cache/
+
