@@ -1,4 +1,7 @@
 <script lang="ts">
+	import Alert from '../components/alert/alert.svelte';
+	import { confirm } from '../stores/alert.ts';
+
 	let task: {
 		title: string;
 		category: 'WORK' | 'PERSONAL' | 'URGENT';
@@ -20,15 +23,28 @@
 	}
 
 	let { data } = $props();
+
+	async function handleDeleteTask(event: SubmitEvent, task: string) {
+		event.preventDefault();
+
+		const ok = await confirm(`${task} will delete!`, 'Are you sure want to delete?');
+
+		if (!ok) return;
+
+		const form = event.target as HTMLFormElement;
+
+		form.submit();
+	}
 </script>
 
 <div class="container">
+	<Alert />
 	<aside>
 		<div class="welcome">
 			<div class="avatar"></div>
 			<div class="welcome-content">
 				<h3>Welcome!</h3>
-				<p class="text-secondary">You have 4 tasks todoy.</p>
+				<p class="text-secondary">You have 4 tasks today.</p>
 			</div>
 		</div>
 
@@ -120,9 +136,9 @@
 			</div>
 
 			<div class="filter-group">
-				<button>All</button>
-				<button>Waiting</button>
-				<button>Completed</button>
+				<a href="?status=ALL">All</a>
+				<a href="?status=WAITING">Waiting</a>
+				<a href="?status=COMPLETED">Completed</a>
 			</div>
 		</header>
 
@@ -136,13 +152,7 @@
 					>
 						<div class="checkbox-container">
 							<form method="POST" action="?/toggleTaskStatus&id={task.id}">
-								<input
-									id="completed"
-									name="completed"
-									type="checkbox"
-									checked={task.completed}
-									onchange={(e) => (e.target as HTMLInputElement).form?.requestSubmit()}
-								/>
+								<input id="completed" name="completed" type="checkbox" checked={task.completed} />
 							</form>
 						</div>
 
@@ -165,7 +175,11 @@
 											? 'personal todo-category'
 											: 'urgent todo-category'}>{task.category}</button
 								>
-								<form method="POST" action="?/deleteTask&id={task.id}">
+								<form
+									method="POST"
+									action="?/deleteTask&id={task.id}"
+									onsubmit={async (event: SubmitEvent) => handleDeleteTask(event, task.title)}
+								>
 									<button class="delete-btn" aria-label="Delete Task" type="submit">
 										<svg
 											xmlns="http://www.w3.org/2000/svg"
@@ -252,25 +266,31 @@
 	.filter-group {
 		border: 1px solid var(--color-border);
 		border-radius: var(--border-radius);
-		padding: 2px 4px;
+		padding: 16px;
 		align-self: center;
 	}
 
-	.filter-group button {
+	.filter-group a {
 		background-color: var(--color-surface);
 		border: none;
-		padding: 8px 12px;
+		padding: 8px 16px;
 		border-radius: var(--border-radius);
 		color: var(--color-secondary-text);
 		transition: background-color 0.3s ease;
+		text-decoration: none;
 	}
 
-	.filter-group :global(button:nth-child(1)) {
+	.filter-group :global(a:nth-child(1)) {
 		background-color: var(--color-background);
 		font-weight: 600;
 	}
 
-	.filter-group button:hover {
+	.filter-group a:focus {
+		outline: none;
+		box-shadow: 0 0 0 1px var(--color-button);
+	}
+
+	.filter-group a:hover {
 		background-color: var(--color-background);
 	}
 

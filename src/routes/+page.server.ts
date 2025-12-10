@@ -3,9 +3,15 @@ import type { Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types.js';
 import { fail } from '@sveltejs/kit';
 
-export const load: PageServerLoad = async () => {
+export const load: PageServerLoad = async ({ url }) => {
+	const completedParam = url.searchParams.get('status');
+
 	const tasks = await prisma.task.findMany({
 		take: 5,
+		where: {
+			completed:
+				completedParam === 'COMPLETED' ? true : completedParam === 'WAITING' ? false : undefined
+		},
 		orderBy: {
 			createdAt: 'desc'
 		}
@@ -69,6 +75,26 @@ export const actions: Actions = {
 		} catch (error) {
 			console.error('Error completing task:', error);
 			fail(500, { error: 'Something went wrong completing task' });
+		}
+	},
+
+	filterTasks: async ({ url }) => {
+		const status = url.searchParams.get('status');
+
+		try {
+			const filteredTasks = await prisma.task.findMany({
+				where: {
+					completed: status === 'completed' ? true : false
+				}
+			});
+
+			return {
+				status: 200,
+				data: filteredTasks
+			};
+		} catch (error) {
+			console.error('Error filtering tasks:', error);
+			fail(500, { error: 'Something went wrong filtering tasks' });
 		}
 	}
 };
