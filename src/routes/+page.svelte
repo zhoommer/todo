@@ -35,6 +35,21 @@
 
 		form.submit();
 	}
+
+	async function handleToggleTaskStatus(event: Event) {
+		event.preventDefault();
+
+		const ok = await confirm(
+			'The task status will change.',
+			'Are you sure you want to change the task status?'
+		);
+
+		if (!ok) return;
+
+		const form = (event.target as HTMLInputElement).form;
+
+		form?.submit();
+	}
 </script>
 
 <div class="container">
@@ -152,7 +167,14 @@
 					>
 						<div class="checkbox-container">
 							<form method="POST" action="?/toggleTaskStatus&id={task.id}">
-								<input id="completed" name="completed" type="checkbox" checked={task.completed} />
+								<input
+									id="completed"
+									name="completed"
+									type="checkbox"
+									checked={task.completed}
+									disabled={task.completed}
+									onchange={(event) => handleToggleTaskStatus(event)}
+								/>
 							</form>
 						</div>
 

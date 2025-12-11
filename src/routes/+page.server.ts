@@ -76,25 +76,5 @@ export const actions: Actions = {
 			console.error('Error completing task:', error);
 			fail(500, { error: 'Something went wrong completing task' });
 		}
-	},
-
-	filterTasks: async ({ url }) => {
-		const status = url.searchParams.get('status');
-
-		try {
-			const filteredTasks = await prisma.task.findMany({
-				where: {
-					completed: status === 'completed' ? true : false
-				}
-			});
-
-			return {
-				status: 200,
-				data: filteredTasks
-			};
-		} catch (error) {
-			console.error('Error filtering tasks:', error);
-			fail(500, { error: 'Something went wrong filtering tasks' });
-		}
 	}
 };
