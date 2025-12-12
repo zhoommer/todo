@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Alert from '../components/alert/alert.svelte';
 	import { confirm } from '../stores/alert.ts';
+	import { page } from '$app/state';
 
 	let task: {
 		title: string;
@@ -49,6 +50,15 @@
 		const form = (event.target as HTMLInputElement).form;
 
 		form?.submit();
+	}
+
+	function activeFilterLink(status: 'ALL' | 'WAITING' | 'COMPLETED'): boolean {
+		const paramStatus = page.url.searchParams.get('status') || 'ALL';
+
+		if (paramStatus === status) {
+			return true;
+		}
+		return false;
 	}
 </script>
 
@@ -151,9 +161,9 @@
 			</div>
 
 			<div class="filter-group">
-				<a href="?status=ALL">All</a>
-				<a href="?status=WAITING">Waiting</a>
-				<a href="?status=COMPLETED">Completed</a>
+				<a href="?status=ALL" class:active={activeFilterLink('ALL')}>All</a>
+				<a href="?status=WAITING" class:active={activeFilterLink('WAITING')}>Waiting</a>
+				<a href="?status=COMPLETED" class:active={activeFilterLink('COMPLETED')}>Completed</a>
 			</div>
 		</header>
 
@@ -302,7 +312,7 @@
 		text-decoration: none;
 	}
 
-	.filter-group :global(a:nth-child(1)) {
+	.filter-group .active {
 		background-color: var(--color-background);
 		font-weight: 600;
 	}
